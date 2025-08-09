@@ -1,7 +1,7 @@
 
 # functions for resume optimization
 from openai import OpenAI
-from top_secret import my_sk
+from key import my_sk
 from markdown import markdown
 from weasyprint import HTML
 
@@ -72,7 +72,7 @@ You are a professional resume optimization expert specializing in tailoring resu
 """
 
 
-def get_resume_response(prompt: str, api_key: str, model: str = "gpt-4o-mini", temperature: float = 0.7) -> str:
+def get_resume_response(prompt: str, api_key: str, model: str = "gemini-2.5-flash", temperature: float = 0.7) -> str:
     """
     Sends a resume optimization prompt to OpenAI's API and returns the optimized resume response.
 
@@ -94,7 +94,10 @@ def get_resume_response(prompt: str, api_key: str, model: str = "gpt-4o-mini", t
         OpenAIError: If there's an issue with the API call
     """
     # Setup API client
-    client = OpenAI(api_key=api_key)
+
+    
+    client = OpenAI(api_key=api_key,
+    base_url="https://generativelanguage.googleapis.com/v1beta/openai/")
 
     # Make API call
     response = client.chat.completions.create(
@@ -152,13 +155,13 @@ def export_resume(new_resume):
     """
     try:
         # save as PDF
-        output_pdf_file = "resumes/resume_new.pdf"
+        output_pdf_file = "Resumes/resume_new.pdf"
         
         # Convert Markdown to HTML
         html_content = markdown(new_resume)
         
         # Convert HTML to PDF and save
-        HTML(string=html_content).write_pdf(output_pdf_file, stylesheets=['resumes/style.css'])
+        HTML(string=html_content).write_pdf(output_pdf_file, stylesheets=['Resumes/style.css'])
 
         return f"Successfully exported resume to {output_pdf_file} 🎉"
     except Exception as e:
